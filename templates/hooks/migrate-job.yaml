@@ -32,6 +32,6 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           args:
-            - "yarn"
+            - "npm"
+            - "run"
             - "db:migrate"
-            - "--env=production-ssl-disabled"

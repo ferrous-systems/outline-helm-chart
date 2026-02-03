@@ -86,12 +86,12 @@ Shared env for all services
 - name: FORCE_HTTPS
   value: "false"
 {{- end }}
-{{- if .Values.postgresql.fromSecret }}
-  - name: DATABASE_URL
-    valueFrom:
-      secretKeyRef:
-        name: {{.Values.postgresql.fromSecret.secretName}}
-        key:  {{ .Values.postgresql.fromSecret.secretKey }}
+{{- with .Values.postgresql.fromSecret }}
+- name: DATABASE_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ .secretName | quote }}
+      key:  {{ .secretKey | quote }}
 {{- end }}
 {{- if .Values.postgresql.enabled }}
 - name: DATABASE_URL

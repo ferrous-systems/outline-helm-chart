@@ -86,6 +86,13 @@ Shared env for all services
 - name: FORCE_HTTPS
   value: "false"
 {{- end }}
+{{- if .Values.postgresql.fromSecret }}
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: {{.Values.postgresql.fromSecret.secretName}}
+        key:  {{ .Values.postgresql.fromSecret.secretKey }}
+{{- end }}
 {{- if .Values.postgresql.enabled }}
 - name: DATABASE_URL
   value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.postgresqlDatabase }}"
@@ -94,9 +101,9 @@ Shared env for all services
 - name: PGSSLMODE
   value: "disable"
 {{- end }}
-{{- if .Values.redis.enabled }}
+{{- with .Values.redis.url }}
 - name: REDIS_URL
-  value: "redis://{{ .Release.Name }}-redis-master:6379"
+  value: {{ . | quote }}
 {{- end }}
 {{- if .Values.minio.enabled }}
 - name: AWS_ACCESS_KEY_ID
